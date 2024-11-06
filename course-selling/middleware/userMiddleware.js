@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
-const JWT_SECRET = process.env.JWT_ADMIN_PASSWORD;
+const JWT_SECRET = process.env.JWT_USER_PASSWORD;
 
-function adminMiddleWare(req, res, next) {
+function userMiddleWare(req, res, next) {
   const token = req.headers.token;
   if (!token) {
     return res.status(401).json({ message: "Auth failed: Token is missing" });
@@ -18,4 +18,4 @@ function adminMiddleWare(req, res, next) {
     });
   }
 }
-module.exports = adminMiddleWare;
+module.exports = userMiddleWare;

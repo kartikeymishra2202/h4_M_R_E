@@ -8,6 +8,6 @@ app.use(express.json());
 connectDB();
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/course", courseRoute);
-app.use("api/v1/admin", adminRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 app.listen(3000);

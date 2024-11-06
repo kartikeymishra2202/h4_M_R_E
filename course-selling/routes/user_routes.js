@@ -1,9 +1,14 @@
 const { Router } = require("express");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "JSON_WEB_TOKEN";
+const dotenv = require("dotenv");
+dotenv.config();
+const JWT_SECRET = process.env.JWT_USER_PASSWORD;
 const bcrypt = require("bcryptjs");
 const { z } = require("zod");
 const UserModel = require("../model/user");
+const userMiddleWare = require("../middleware/userMiddleware");
+const PurchaseModel = require("../model/purchase");
+const courseModel = require("../model/course");
 
 const userRoutes = Router();
 
@@ -74,6 +79,27 @@ userRoutes.post("/signin", async function (req, res) {
       message: "Password is incorrect",
     });
   }
+});
+
+userRoutes.get("/purchases", userMiddleWare, async function (req, res) {
+  const userId = req.userId;
+  const courseId = req.body.courseId;
+  const purchases = await PurchaseModel.find({
+    userId,
+    courseId,
+  });
+
+  const purchaseCourseId = [];
+  for (let i = 0; i < purchases.length; i++) {
+    purchaseCourseId.push(purchases[i].courseId);
+  }
+  const courseData = await courseModel.find({
+    _id: { $in: purchaseCourseId },
+  });
+  res.json({
+    purchases,
+    courseData,
+  });
 });
 
 module.exports = userRoutes;
